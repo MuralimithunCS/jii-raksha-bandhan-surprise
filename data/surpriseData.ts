@@ -29,38 +29,38 @@ export const surpriseData = {
   // Screen 1: The Mysterious Opening
   opening: {
     title: "Jii 🤍🧿...",
-    subtitle: "I made something special for you.",
-    warning: "But... you have to promise me you'll see it till the end.",
+    subtitle: "Today is an extraordinarily special day.",
+    warning: "Promise me you'll see your birthday surprise till the end! 🎂✨",
     buttonText: "Okay... show me 👀",
   },
 
   // Screen 2: Digital Gift Box
   giftBox: {
-    initialPrompt: "You have a parcel! Tap to unbox it. 📦",
-    openedText: "It's not the gift...",
-    subText: "It's the experience. ❤️",
+    initialPrompt: "You have a birthday parcel! Tap to unbox it. 🎁",
+    openedText: "It's not just a gift...",
+    subText: "It's a birthday experience made just for you. ❤️",
     continueText: "Next",
   },
 
   // Screen 3: Playful confirmation
   playfulQuestion: {
-    question: "Jii 🤍🧿, are you ready for this?",
-    yesOptions: ["YES ❤️", "YESSS 😭", "Didi is ready! 💃"],
+    question: "Jii 🤍🧿, are you ready for your birthday surprise?",
+    yesOptions: ["YES ❤️", "YESSS 🎂", "Birthday Girl is Ready! 💃"],
     noOptions: ["No", "Wait, what?", "Not ready 😂"],
     playfulAlerts: [
-      "Jii 🤍🧿, don't be shy! 😂",
-      "I know you are curious! Tapping No is not an option here.",
-      "Nice try, but you can't run away. Click YES! 😉",
-      "Didi, please, I spent a lot of time on this. Click YES! 🥺",
-      "You promised to see it till the end! ❤️",
+      "Jii 🤍🧿, don't be shy on your birthday! 😂",
+      "I know you are curious! Tapping No is not allowed today.",
+      "Nice try, but you can't run away from your birthday surprise! 😉",
+      "Didi, please, I spent so much time on this. Click YES! 🥺🎂",
+      "You promised to see your birthday surprise till the end! ❤️",
     ]
   },
 
-  // Screen 4: Raksha Bandhan Reveal
+  // Screen 4: Birthday Reveal
   greetingReveal: {
-    heading: "Happy Raksha Bandhan, Jii 🤍🧿 ❤️",
-    introText: "To the person who has been there through literally everything...",
-    subText: "A small thread... and a lifetime of memories. (Tap anywhere to enter our Memory Scrapbook ✨)"
+    heading: "Happy Birthday, Jii 🤍🧿 🎂✨",
+    introText: "To the most special, loving, and extraordinary sister in the entire world...",
+    subText: "Another year of you being my biggest blessing. (Tap anywhere to enter your Birthday Scrapbook ✨)"
   },
 
   // Screen 5: Memory World / Scrapbook (Using actual uploaded images)
@@ -68,7 +68,7 @@ export const surpriseData = {
     {
       id: "mem1",
       image: "/images/1fdbfb0c-5877-4a33-94ff-fdbdc46ad99f.jpg",
-      caption: "Fights, remote battles, and sibling laughter! 😂",
+      caption: "Fights, remote battles, and endless sibling laughter! 😂",
       date: "Sibling Vibe",
       rotation: -6,
     },
@@ -108,29 +108,29 @@ export const surpriseData = {
       id: 1,
       title: "Open me first 👀",
       sub: "Playful Sibling Truths",
-      message: "Congratulations Jii 🤍🧿! You have won the award for the 'Most Annoyingly Caring Sister' in the universe. No refunds or exchanges allowed! 😂🏆",
+      message: "Happy Birthday Jii 🤍🧿! You have officially won the lifetime award for the 'Most Annoyingly Caring Sister' in the universe. No refunds or exchanges allowed! 😂🏆🎂",
       giftType: "joke"
     },
     {
       id: 2,
       title: "Okay... this one is special",
       sub: "A Precious Vibe",
-      message: "Here is a gentle reminder that no matter how far we are or how busy life gets, you are my favorite person to annoy. 🌟",
+      message: "Here is a gentle reminder that no matter how old we get or how busy life becomes, you will forever be my favorite person to annoy. Happy Birthday Didi! 🌟🎂",
       giftType: "photo",
       image: "/images/a88f1735-0cba-4e63-aa6f-a0ad4f368707.jpg"
     },
     {
       id: 3,
       title: "You probably didn't expect this",
-      sub: "Heartfelt Gratitude",
-      message: "Thank you for listening to my infinite rants, holding me together when things got tough, and always having my back. I am incredibly lucky to have you as my Didi. 🥹💖",
+      sub: "Heartfelt Birthday Gratitude",
+      message: "Thank you for listening to my infinite rants, holding me together when things got tough, and always having my back. I am incredibly lucky and proud to have you as my sister. May this birthday bring you infinite happiness! 🥹💖✨",
       giftType: "hearts"
     },
     {
       id: 4,
       title: "Last one... promise",
-      sub: "A Spotlight Moment",
-      message: "A little video I saved just for this moment. Thank you for being the highlight of my childhood! ❤️🌌",
+      sub: "A Birthday Spotlight",
+      message: "A little video I saved just for this special day. Thank you for making my life so bright and joyful! Happy Birthday Jii! ❤️🌌🎂",
       giftType: "video",
       video: "/images/WhatsApp Video 2026-08-27 at 11.21.36 PM.mp4",
       image: "/images/d4cb1a1b-2b59-48ba-a86f-ac7c7e235c21.jpg" // Thumbnail / fallback
@@ -138,7 +138,7 @@ export const surpriseData = {
   ] as SecretGift[],
 
   letter: {
-    title: "For Jii 🤍🧿 ❤️",
+    title: "For Jii 🤍🧿 🎂❤️",
     paragraphs: [
       "I know I don't say it often enough…",
       "Actually, I don't think I say it at all, because we're siblings and apparently expressing emotions is legally awkward. 😂",
@@ -151,7 +151,7 @@ export const surpriseData = {
       "Thank you for being the wise, generous, strong, and patient person you are. Your strength inspires me, and your kindness is something I genuinely admire.",
       "And even though I might annoy you, irritate you, fight with you, and act like I don't care sometimes…",
       "I hope you know that I always will.",
-      "On this Raksha Bandhan, I just want to promise you one thing:",
+      "On your special birthday, I just want to promise you one thing:",
       "No matter how much life changes, how busy we get, or where life takes us, I'll always be there for you.",
       "I'll stand by you.",
       "I'll listen to your advice… sometimes. 😂",
@@ -163,7 +163,7 @@ export const surpriseData = {
       "Thank you for being my Jii 🤍🧿.",
       "I may not say it often.",
       "But I love you more than you know. ❤️",
-      "Happy Raksha Bandhan, Jii 🤍🧿. 🪢❤️",
+      "Happy Birthday, Jii 🤍🧿. 🎂🎉❤️",
       "With all the love in the universe,"
     ],
     signature: "Your annoying brother ❤️😂"
@@ -172,9 +172,9 @@ export const surpriseData = {
   // Screen 8: Final Emotional Reveal
   finalMessage: {
     title: "Thank you for being my sister.",
-    subtitle: "I may not say it every day...",
-    highlight: "But I love you more than you know. ❤️",
-    closing: "Happy Raksha Bandhan, Jii 🤍🧿.",
+    subtitle: "May all your dreams, prayers, and wishes come true this year...",
+    highlight: "Happy Birthday, Jii 🤍🧿 🎂❤️",
+    closing: "Forever blessed to have you in my life.",
     author: "— Made with love by your brother"
   }
 };

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "For Jii ❤️",
-  description: "A premium surprise experience made just for you.",
+  title: "Happy Birthday Jii 🤍🧿",
+  description: "A magical birthday surprise made with love by your brother.",
 };
 
 export default function RootLayout({

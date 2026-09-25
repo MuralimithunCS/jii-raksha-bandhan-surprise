@@ -16,13 +16,13 @@ export default function RakhiTyingScreen({ onComplete }: RakhiTyingScreenProps) 
       <div className="absolute inset-0 bg-radial-[circle_at_center,_var(--color-burgundy)_0%,_transparent_75%] opacity-35 z-0" />
       <div className="absolute inset-0 cinematic-vignette-dark z-0 pointer-events-none" />
 
-      <div className="relative z-20 max-w-md w-full flex flex-col items-center gap-6">
+      <div className="relative z-20 max-w-md w-full flex flex-col items-center gap-4">
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.6 }}
           className="text-xs uppercase tracking-widest text-rose-gold font-semibold"
         >
-          A Sacred Thread
+          A Special Birthday Moment ✨
         </motion.span>
         
         <motion.h3
@@ -31,7 +31,7 @@ export default function RakhiTyingScreen({ onComplete }: RakhiTyingScreenProps) 
           transition={{ delay: 0.2 }}
           className="text-2xl md:text-3xl font-serif-display italic text-[#FAF8F5] leading-tight"
         >
-          Connecting us across any distance...
+          Close your eyes & make a wish, Jii 🤍🧿...
         </motion.h3>
 
         {/* Cinematic SVG Animation Container */}
@@ -41,11 +41,11 @@ export default function RakhiTyingScreen({ onComplete }: RakhiTyingScreenProps) 
 
         <motion.p
           initial={{ opacity: 0 }}
-          animate={{ opacity: [0.2, 0.7, 0.2] }}
+          animate={{ opacity: [0.3, 0.8, 0.3] }}
           transition={{ repeat: Infinity, duration: 2.5 }}
-          className="text-xs text-[#E3B7A8]/70 font-sans-clean mt-2"
+          className="text-xs text-[#E3B7A8]/70 font-sans-clean mt-1"
         >
-          Tying Rakhi onto brother&apos;s wrist... ❤️
+          Your wish is safe with me forever! 🌟
         </motion.p>
       </div>
 

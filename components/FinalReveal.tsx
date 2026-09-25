@@ -161,9 +161,9 @@ export default function FinalReveal() {
               <div className="w-12 h-12 rounded-full bg-rose-gold/10 flex items-center justify-center text-rose-gold mb-1 mt-2">
                 <Sparkles className="w-6 h-6" />
               </div>
-              <h3 className="font-serif-display font-bold text-xl">The Sibling Bond Guarantee 📜</h3>
+              <h3 className="font-serif-display font-bold text-xl">The Birthday Sibling Guarantee 📜🎂</h3>
               <p className="text-sm text-burgundy/80 leading-relaxed font-sans-clean px-2">
-                &ldquo;By reading this, you acknowledge that I will always steal your snacks, argue with you about trivial things, and be the most annoying sibling in history. But you also agree that you have the most caring brother in the world! No refunds.&rdquo; 😂❤️
+                &ldquo;By blowing out your birthday candles today, you unlock unlimited sibling love, zero complaints (strictly for today 😂), free snacks, and a lifetime brother protection pass! Happy Birthday Didi! 🎂❤️&rdquo;
               </p>
               <button
                 onClick={() => setShowEasterEgg(false)}
