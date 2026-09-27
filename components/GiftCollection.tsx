@@ -23,7 +23,7 @@ export default function GiftCollection({ onComplete }: GiftCollectionProps) {
     
     if (gift.giftType === "video") {
       AudioSynth.playFirework();
-    } else if (gift.giftType === "tribute") {
+    } else if (gift.giftType === "jukebox") {
       AudioSynth.playSuccess();
     } else {
       AudioSynth.playGiftOpen();
@@ -183,15 +183,28 @@ export default function GiftCollection({ onComplete }: GiftCollectionProps) {
                   </motion.div>
                 )}
 
-                {/* Tribute animated heart */}
-                {activeGift.giftType === "tribute" && (
-                  <div className="relative w-16 h-16 flex items-center justify-center my-2">
-                    <motion.div 
-                      animate={{ scale: [1, 1.25, 1] }} 
-                      transition={{ repeat: Infinity, duration: 1.5 }}
-                    >
-                      <Heart className="w-12 h-12 text-pink-500 fill-pink-500" />
-                    </motion.div>
+                {/* Sibling Jukebox Gift Render */}
+                {activeGift.giftType === "jukebox" && activeGift.songs && (
+                  <div className="w-full flex flex-col gap-2 my-2">
+                    {activeGift.songs.map((song, sIdx) => (
+                      <div 
+                        key={sIdx} 
+                        className="bg-white/10 p-3 rounded-2xl border border-white/15 flex items-center justify-between text-left hover:bg-white/15 transition-all shadow-sm"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-pink-500/20 text-pink-300 flex items-center justify-center shrink-0">
+                            <Sparkles className="w-4 h-4 text-amber-300" />
+                          </div>
+                          <div>
+                            <span className="text-sm font-bold text-white block leading-tight">{song.title}</span>
+                            <span className="text-[11px] text-purple-200/80">{song.subtitle}</span>
+                          </div>
+                        </div>
+                        <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-200 font-semibold uppercase tracking-wider shrink-0 border border-amber-300/30">
+                          {song.tag}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 )}
 

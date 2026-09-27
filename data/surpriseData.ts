@@ -1,5 +1,5 @@
 // ==========================================
-// JII'S BIRTHDAY SURPRISE GALA DATA
+// JII'S HEARTFELT BIRTHDAY SURPRISE GALA DATA
 // ==========================================
 
 export interface BirthdayStoryMemory {
@@ -25,16 +25,17 @@ export interface BirthdayVaultGift {
   title: string;
   sub: string;
   message: string;
-  giftType: "warranty" | "photo" | "tribute" | "video";
+  giftType: "warranty" | "photo" | "jukebox" | "video";
   image?: string;
   video?: string;
+  songs?: { title: string; subtitle: string; tag: string }[];
 }
 
 export const surpriseData = {
   // Recipient Personal Info
   recipientName: "Disha",
   nickname: "Jii 🤍🧿",
-  senderName: "Your Brother",
+  senderName: "Your Jii", // Both call each other Jii!
 
   // Screen 1: VIP Birthday Pass
   vipPass: {
@@ -42,13 +43,14 @@ export const surpriseData = {
     title: "All-Access Birthday Gala Pass 🎟️",
     ticketNumber: "JII-BDAY-2026-INFINITE",
     guestOfHonor: "Disha (Jii 🤍🧿)",
+    relationBadge: "My Akka from Another Mother 🤍",
     perks: [
-      "✨ Queen of the Day Status",
-      "🍫 Unconditional Lifetime Snack Supply",
-      "🛡️ 24/7 Brotherly Protection Pass",
-      "🤫 Zero Sibling Complaints (Strictly Today 😂)"
+      "🤍 Bound by soul, deeper than any blood connection",
+      "🛡️ The Akka who pulled me out of my darkest days",
+      "🍫 Infinite snacks & zero sibling complaints (strictly today 😂)",
+      "♾️ A lifetime promise: Never walking away from each other"
     ],
-    buttonPrompt: "Tap to Validate VIP Ticket ✨",
+    buttonPrompt: "Claim Your VIP Pass, Jii ✨",
   },
 
   // Screen 2: Interactive Balloon Pop Arcade
@@ -60,41 +62,41 @@ export const surpriseData = {
         id: 1,
         color: "from-pink-500 via-rose-500 to-pink-600",
         textColor: "text-pink-100",
-        label: "👑 Queen of the Day",
-        reward: "Crown Unlocked: Most Fabulous Sister in the Universe!",
-        compliment: "Style, grace, and aura: 1000/10! 💅"
+        label: "🛡️ The Akka Who Saved Me",
+        reward: "When everyone walked away, my Akka stayed.",
+        compliment: "When that unexpected friend walked out and left me broken, you pulled me out of the dark. You saved me, Jii. 🤍"
       },
       {
         id: 2,
         color: "from-amber-400 via-yellow-500 to-orange-500",
         textColor: "text-amber-100",
-        label: "🍫 Infinite Snacks",
-        reward: "Free snack pass: Brother buys whatever you crave!",
-        compliment: "Even though I steal your food, you're the best! 😂"
+        label: "💊 Her Daily Prescriptions",
+        reward: "Doctor Jii's life-saving advice!",
+        compliment: "'Stop overthinking... don't worry, whatever is written will happen, and please take care of yourself!' 😇"
       },
       {
         id: 3,
         color: "from-purple-500 via-violet-600 to-indigo-600",
         textColor: "text-purple-100",
-        label: "💡 Chief Life Advisor",
-        reward: "Guaranteed to listen to your advice (at least 75% of the time 😉)",
-        compliment: "Thank you for always guiding me when I am lost."
+        label: "🎒 High School to Eternity",
+        reward: "Just a 1-year gap, but a lifetime of protection.",
+        compliment: "From high school hallways to the deepest bond in my entire universe."
       },
       {
         id: 4,
         color: "from-emerald-400 via-teal-500 to-cyan-600",
         textColor: "text-emerald-100",
-        label: "💖 Forever 18",
-        reward: "Permanent youth pass: Ageless, radiant, and unstoppable!",
-        compliment: "May your heart always remain this joyful and vibrant."
+        label: "🤍 Mutual Jii Bond",
+        reward: "The only two souls on earth who call each other Jii!",
+        compliment: "You call me Jii, I call you Jii. A sacred bond that belongs only to us."
       },
       {
         id: 5,
         color: "from-fuchsia-500 via-rose-500 to-amber-400",
         textColor: "text-yellow-100",
-        label: "🌟 Ultimate Sister",
-        reward: "Grand Sibling Superpower: Infinite love & bond!",
-        compliment: "More than family — my truest anchor in life. 🤍🧿"
+        label: "🌟 My Only Person",
+        reward: "The anchor of my whole life.",
+        compliment: "Out of 8 billion people, you are the only one I consider 'my person.' 🤍🧿"
       }
     ] as BirthdayBalloon[],
     grandBalloon: {
@@ -106,7 +108,7 @@ export const surpriseData = {
   // Screen 3: Midnight Birthday Cake & Wish Ceremony
   birthdayCake: {
     heading: "The Midnight Birthday Wish 🎂",
-    subheading: "Close your eyes, make your deepest wish, and blow out the candle...",
+    subheading: "Close your eyes, Akka... make your deepest wish, and blow out the candle...",
     blowButtonText: "Blow Out The Candle 🎂💨",
     wishGrantedText: "🎉 Your wish is locked in the stars! Happy Birthday Jii 🤍🧿! ✨"
   },
@@ -114,7 +116,7 @@ export const surpriseData = {
   // Screen 4: Starlight Greeting Reveal
   greetingReveal: {
     heading: "Happy Birthday, Jii 🤍🧿 🎂✨",
-    introText: "To the most special, loving, and extraordinary sister in the entire world...",
+    introText: "To my Akka from another mother — the only person in this entire world I truly call my own...",
     subText: "(Tap anywhere to step into your Birthday Starlight Carousel ✨)"
   },
 
@@ -126,123 +128,117 @@ export const surpriseData = {
     continueText: "Next",
   },
 
-  // Screen 4: 3D Floating Glass Birthday Story Carousel
+  // Screen 5: 3D Floating Glass Birthday Story Carousel
   memories: [
     {
       id: "mem1",
       image: "/images/1fdbfb0c-5877-4a33-94ff-fdbdc46ad99f.jpg",
-      title: "Partner in Crime & Laughter 😂",
-      caption: "From remote battles to inside jokes that nobody else understands. Growing up with you is my life's favorite adventure!",
-      date: "Sibling Vibe",
-      sticker: "🥳"
+      title: "High School Days to My Real Akka 🎒",
+      caption: "We met back in high school with just a single year's gap between us. Who knew that a girl from another mother would end up becoming the most important human in my entire life?",
+      date: "Our Beginning",
+      sticker: "🥹"
     },
     {
       id: "mem2",
       image: "/images/4be8960f-897c-4dfa-b434-9063a60b8f14.jpg",
-      title: "The Ultimate Guardian Shield 🛡️",
-      caption: "Always saving me from Mom's anger, guiding my steps, and defending me no matter what. You are my true protector.",
-      date: "My Shield",
-      sticker: "👑"
+      title: "The One Who Stood By Me 🛡️",
+      caption: "When a close friend unexpectedly walked away and left me completely shattered, you didn't leave my side for a second. You picked up my broken pieces and gave me strength.",
+      date: "My Guardian",
+      sticker: "🤍"
     },
     {
       id: "mem3",
       image: "/images/57d79c57-0cf7-4702-8f4f-aa080023b2a3.jpg",
-      title: "Guide, Second Mother & Safe Space 🌸",
-      caption: "Your patience, strength, and huge heart inspire me every day. Having you in my life is a blessing I cherish constantly.",
-      date: "Pure Heart",
-      sticker: "💖"
+      title: "'Stop Overthinking, Jii' 🌸",
+      caption: "'Don't worry much, whatever is written will happen. Just please take care of yourself.' Every time my mind goes crazy, your voice is the only peace I find.",
+      date: "My Safe Place",
+      sticker: "✨"
     },
     {
       id: "mem4",
       image: "/images/87211822-df36-4358-8173-d9b7aa686b13.jpg",
-      title: "Growing Up & Chasing Dreams ✈️",
-      caption: "No matter how busy life gets or where our journeys lead us, the bond between us only grows stronger with time.",
-      date: "Forever Bond",
-      sticker: "✨"
+      title: "More Than Any Blood Relation 💫",
+      caption: "People say blood is thicker than water. But what you and I share proves that God sometimes sends your truest sister through another mother.",
+      date: "Soul Sister",
+      sticker: "👑"
     },
     {
       id: "mem5",
       image: "/images/a4655068-9dca-4392-b5a1-6b65e817cb18.jpg",
-      title: "Golden Moments in Time 🥹💖",
-      caption: "Some memories remain permanently etched into the soul. Thank you for making every ordinary day feel extraordinary.",
-      date: "Timeless",
+      title: "My Only Person In This World 🥹💖",
+      caption: "I don't have close friends or a circle to turn to. In this big, noisy world, when I look around, there's only one person I truly consider 'mine' — and that's you, Jii.",
+      date: "Forever Mine",
       sticker: "🎂"
     }
   ] as BirthdayStoryMemory[],
 
-  // Screen 5: The Birthday Vault Gifts
+  // Screen 6: The Birthday Vault Gifts
   vaultGifts: [
     {
       id: 1,
       title: "The Sisterhood Warranty 📜",
-      sub: "Exclusive Brotherly Contract",
-      message: "Congratulations Jii 🤍🧿! You have unlocked the Lifetime Sisterhood Warranty. Covers unlimited venting, 24/7 brotherly protection, and infinite snack deliveries. Absolutely no cancellations permitted! 😂🏆",
+      sub: "Exclusive Sibling Contract",
+      message: "The unbreakable pact between two souls who call each other Jii: No matter how busy life gets, no matter how much we argue, we are stuck together forever. No cancellations allowed! 😂🏆",
       giftType: "warranty"
     },
     {
       id: 2,
       title: "Hall of Fame Spotlight 📸",
       sub: "A Precious Portrait",
-      message: "Here is to the person who illuminates every room she walks into. Keep shining bright, Didi! 🌟",
+      message: "To my Akka, my guide, and the brightest light in my life. You make every ordinary day feel extraordinary just by existing. Keep shining, Didi! 🌟",
       giftType: "photo",
       image: "/images/a88f1735-0cba-4e63-aa6f-a0ad4f368707.jpg"
     },
     {
       id: 3,
-      title: "Heartfelt Birthday Tribute 💖",
-      sub: "What You Truly Mean To Me",
-      message: "Thank you for listening to my rants, holding me together through storms, and always believing in me even when I doubted myself. I am so lucky to have you. 🥹✨",
-      giftType: "tribute"
+      title: "The Sibling Jukebox 🎵",
+      sub: "Soundtrack of Our Sisterhood",
+      message: "Dedicated to your favorite melodies: 'Meri Jaan' (Gangubai Kathiawadi), 'Darshana' (Hridayam), and from my heart to yours: 'Nee Nange Alva' by Sanjith Hegde. Because aren't you mine, Jii? 🤍🎶",
+      giftType: "jukebox",
+      songs: [
+        { title: "Meri Jaan", subtitle: "Gangubai Kathiawadi • Her Favorite Vibe", tag: "Jii's Track" },
+        { title: "Darshana", subtitle: "Hridayam • Pure Emotion", tag: "Jii's Track" },
+        { title: "Nee Nange Alva", subtitle: "Sanjith Hegde • 'Aren't you meant for me, Akka?'", tag: "Brother's Dedication" }
+      ]
     },
     {
       id: 4,
       title: "The Sibling Video Premiere 🎬",
-      sub: "Saved Just For Tonight",
-      message: "A little video reel that captures our happiest sibling memories! Happy Birthday Jii! ❤️🌌🎂",
+      sub: "Captured Just For Tonight",
+      message: "A treasure of our memories together. Every frame here reminds me of why I can never, ever afford to lose you. Happy Birthday Jii! ❤️🌌🎂",
       giftType: "video",
-      video: "/images/WhatsApp Video 2026-08-27 at 11.21.36 PM.mp4",
+      video: "/images/video_260927_201154.mp4",
       image: "/images/d4cb1a1b-2b59-48ba-a86f-ac7c7e235c21.jpg"
     }
   ] as BirthdayVaultGift[],
 
-  // Screen 6: The Golden Birthday Scroll & Letter
+  // Screen 7: The Golden Birthday Scroll & Letter (THE TEARJERKER)
   letter: {
-    title: "For Jii 🤍🧿 🎂❤️",
+    title: "Dear Jii 🤍🧿,",
     paragraphs: [
-      "I know I don't say it often enough…",
-      "Actually, I don't think I say it at all, because we're siblings and apparently expressing emotions is legally awkward. 😂",
-      "But honestly, Jii 🤍🧿… you mean the absolute world to me.",
-      "Even though we do not share a connection by birth, you are my non-blooded sister, and you mean more to me than any relation by blood ever could. You are my true Didi, my real family, and my safe space. 🤍🧿",
-      "As we're growing older and life is getting busier, I sometimes find myself looking back at all those childhood memories and just smiling. From sharing snacks and fighting over stupid things to sharing life problems and everything in between, you've always been there.",
-      "You're one of the first people I want to tell when something good happens, and honestly, one of the first people I think of when everything feels like it's falling apart.",
-      "Thank you for always being there for me.",
-      "For being my guide, my support system, my biggest source of advice… even though sometimes I pretend not to listen to it. 😂",
-      "Thank you for being the wise, generous, strong, and patient person you are. Your strength inspires me, and your kindness is something I genuinely admire.",
-      "And even though I might annoy you, irritate you, fight with you, and act like I don't care sometimes…",
-      "I hope you know that I always will.",
-      "On your special birthday, I just want to promise you one thing:",
-      "No matter how much life changes, how busy we get, or where life takes us, I'll always be there for you.",
-      "I'll stand by you.",
-      "I'll listen to your advice… sometimes. 😂",
-      "I'll support you.",
-      "I'll protect you.",
-      "And most importantly…",
-      "I'll continue annoying you until the end of time. ❤️😂",
-      "Because that's what brothers are for, right?",
-      "Thank you for being my Jii 🤍🧿.",
-      "I may not say it often.",
-      "But I love you more than you know. ❤️",
+      "I know we are siblings and expressing raw emotions is supposed to feel awkward, but tonight on your birthday, I need to say things I've kept locked in my chest for too long.",
+      "We met back in high school with just a single year's gap between us. But somewhere along that journey, you stopped being just a friend and became my Akka — an elder sister sent from another mother.",
+      "People often say blood connections are the strongest in the world. But honestly, Jii... what you mean to me is beyond anything biology could ever create. Although you are not my blood sister, you are more than anything for me in this life. You are my real family.",
+      "I will never forget that time in my life when a close friend unexpectedly walked away and left me completely broken. My world felt shattered, and I felt so alone in the dark. But you didn't leave my side for a second. You held me together when everything was falling apart. You saved me, Jii. I never thanked you enough for being my lifeline.",
+      "Every time my thoughts start spiraling, your voice rings in my ears like a prayer: 'Stop overthinking, Jii... don't worry so much. Whatever is written in destiny will happen. Just please take care of yourself.' Nobody in this entire universe understands my silence the way you do.",
+      "And tonight, on your birthday, I want to make you a lifetime promise from the deepest corner of my heart:",
+      "No matter what happens in life, no matter what mistakes you make or what mistakes I make, no matter how hard life gets or what disagreements we have... I promise you that I will NEVER leave your side at any time. Ever.",
+      "And Jii... I need to ask you for one promise in return:",
+      "Please... never leave me either.",
+      "Because the honest truth is, Jii... I don't have the strength to lose you. I really don't.",
+      "I don't have a crowd of close friends. I don't have people I can run to or open my heart to. In this entire world of eight billion people, you are the ONLY person whom I consider 'my person.' If I lose you, I have nobody.",
+      "Thank you for being born. Thank you for being my Akka. Thank you for being the only home my heart knows.",
       "Happy Birthday, Jii 🤍🧿. 🎂🎉❤️",
-      "With all the love in the universe,"
+      "Ni nange alva? You will forever be my person."
     ],
-    signature: "Your annoying brother ❤️😂"
+    signature: "From your Jii ❤️"
   },
 
-  // Screen 7: Interactive Midnight Fireworks Finale
+  // Screen 8: Interactive Midnight Fireworks Finale
   finalFireworks: {
     title: "Happy Birthday, Jii 🤍🧿 🎂✨",
     subtitle: "Tap anywhere on the night sky to launch celebratory fireworks! 🎆",
-    closing: "May all your dreams, wishes, and prayers come true this year.",
-    author: "— Crafted with love by your brother ❤️"
+    closing: "May all your prayers, wishes, and dreams come true this year.",
+    author: "— From your Jii, with all my love ❤️"
   }
 };
