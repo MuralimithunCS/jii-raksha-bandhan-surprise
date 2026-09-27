@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import { Volume2, VolumeX, Music } from "lucide-react";
+import React, { useEffect } from "react";
+import { Volume2, VolumeX } from "lucide-react";
 
 // Safe singleton helper for Web Audio API synthesis
 export class AudioSynth {
@@ -9,7 +9,9 @@ export class AudioSynth {
 
   private static init() {
     if (!this.ctx && typeof window !== "undefined") {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (AudioCtx) {
         this.ctx = new AudioCtx();
       }
@@ -203,40 +205,95 @@ export class AudioSynth {
   }
 }
 
+/** Shared player so the jukebox and letter can pause background music. */
+export class Soundtrack {
+  private static bg: HTMLAudioElement | null = null;
+  private static track: HTMLAudioElement | null = null;
+  private static bgEnabled = false;
+  private static listeners = new Set<() => void>();
+
+  static subscribe(listener: () => void) {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  static currentSrc() {
+    return this.track?.dataset.src ?? null;
+  }
+
+  static isPlayingSrc(src: string) {
+    return this.track?.dataset.src === src && !this.track.paused;
+  }
+
+  private static notify() {
+    this.listeners.forEach((fn) => fn());
+  }
+
+  static setBackgroundEnabled(enabled: boolean, onAutoplayFail?: () => void) {
+    this.bgEnabled = enabled;
+    if (typeof window === "undefined") return;
+
+    if (!this.bg) {
+      this.bg = new Audio("/music/background.mp3");
+      this.bg.loop = true;
+      this.bg.volume = 0.35;
+    }
+
+    if (enabled && !this.track) {
+      this.bg.play().catch((err) => {
+        console.warn("Background music blocked:", err);
+        onAutoplayFail?.();
+      });
+    } else if (!enabled) {
+      this.bg.pause();
+    }
+  }
+
+  static playSong(src: string, loop = true) {
+    this.stopSong(false);
+    this.bg?.pause();
+
+    const audio = new Audio(src);
+    audio.loop = loop;
+    audio.volume = 0.85;
+    audio.dataset.src = src;
+    audio.onended = () => {
+      if (this.track === audio) {
+        this.track = null;
+        this.resumeBackground();
+        this.notify();
+      }
+    };
+    this.track = audio;
+    audio.play().catch((err) => console.warn("Song failed to play:", err));
+    this.notify();
+  }
+
+  static stopSong(resumeBackground = true) {
+    if (this.track) {
+      this.track.pause();
+      this.track.src = "";
+      this.track = null;
+    }
+    if (resumeBackground) this.resumeBackground();
+    this.notify();
+  }
+
+  private static resumeBackground() {
+    if (this.bgEnabled && this.bg) {
+      this.bg.play().catch(() => {});
+    }
+  }
+}
+
 interface MusicControlProps {
   isPlayingMusic: boolean;
   setIsPlayingMusic: (val: boolean) => void;
 }
 
 export default function MusicControl({ isPlayingMusic, setIsPlayingMusic }: MusicControlProps) {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
   useEffect(() => {
-    // Instantiate background audio element
-    const audio = new Audio("/music/background.mp3");
-    audio.loop = true;
-    audio.volume = 0.4;
-    audioRef.current = audio;
-
-    return () => {
-      audio.pause();
-      audioRef.current = null;
-    };
-  }, []);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (isPlayingMusic) {
-      audio.play().catch((err) => {
-        console.warn("Autoplay blocked or audio missing:", err);
-        // Turn off toggle if it fails to play completely
-        setIsPlayingMusic(false);
-      });
-    } else {
-      audio.pause();
-    }
+    Soundtrack.setBackgroundEnabled(isPlayingMusic, () => setIsPlayingMusic(false));
   }, [isPlayingMusic, setIsPlayingMusic]);
 
   const toggleMusic = () => {
@@ -248,7 +305,7 @@ export default function MusicControl({ isPlayingMusic, setIsPlayingMusic }: Musi
     <div className="fixed top-5 right-5 z-50 flex items-center gap-2">
       <button
         onClick={toggleMusic}
-        className="w-10 h-10 rounded-full bg-white/70 dark:bg-black/40 backdrop-blur-md flex items-center justify-center text-burgundy dark:text-rose-gold border border-burgundy/10 dark:border-white/10 shadow-md hover:scale-105 hover:bg-white dark:hover:bg-black transition-all cursor-pointer"
+        className="w-10 h-10 rounded-full bg-zinc-950/80 backdrop-blur-md flex items-center justify-center text-[#FFD166] border border-amber-300/40 shadow-md hover:scale-105 hover:bg-zinc-900 transition-all cursor-pointer"
         aria-label="Toggle Background Music"
       >
         {isPlayingMusic ? (

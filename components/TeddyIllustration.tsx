@@ -21,10 +21,10 @@ export function TeddyCharacter({
           initial={{ opacity: 0, scale: 0.8, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="absolute -top-16 bg-white dark:bg-zinc-900 border border-burgundy/10 dark:border-rose-gold/20 text-burgundy dark:text-rose-gold px-4 py-2 rounded-2xl shadow-md text-xs font-semibold whitespace-nowrap z-30"
+          className="absolute -top-16 bg-zinc-950/90 border border-amber-300/40 text-[#FFD166] px-4 py-2 rounded-2xl shadow-lg text-xs font-semibold whitespace-nowrap z-30"
         >
           {speechBubble}
-          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-zinc-900 border-r border-b border-burgundy/10 dark:border-rose-gold/20 rotate-45" />
+          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-zinc-950 border-r border-b border-amber-300/40 rotate-45" />
         </motion.div>
       )}
 
@@ -219,7 +219,7 @@ export function BirthdayCakeScene({ onFinished }: { onFinished: () => void }) {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-4 bg-white px-4 py-2 rounded-2xl shadow-md border border-rose-gold/30 text-burgundy font-medium text-xs md:text-sm text-center"
+        className="mb-4 bg-zinc-950/85 backdrop-blur-md px-5 py-2.5 rounded-full border border-amber-300/50 text-[#FFD166] font-semibold text-xs md:text-sm text-center shadow-[0_0_25px_rgba(255,209,102,0.3)]"
       >
         {celebrateText}
       </motion.div>
@@ -340,7 +340,7 @@ export function BirthdayCakeScene({ onFinished }: { onFinished: () => void }) {
         onClick={handleBlow}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="mt-4 px-8 py-3 bg-burgundy text-[#FAF8F5] rounded-full text-xs md:text-sm font-bold tracking-widest uppercase cursor-pointer shadow-lg hover:bg-burgundy/90 transition-all flex items-center gap-2"
+        className="mt-4 px-8 py-3 bg-gradient-to-r from-amber-400 via-pink-500 to-purple-600 text-white rounded-full text-xs md:text-sm font-bold tracking-widest uppercase cursor-pointer shadow-[0_0_25px_rgba(236,72,153,0.4)] hover:brightness-110 transition-all flex items-center gap-2 border border-white/20"
       >
         {isBlown ? "Wish Granted! ✨" : "Blow The Candle 🎂💨"}
       </motion.button>

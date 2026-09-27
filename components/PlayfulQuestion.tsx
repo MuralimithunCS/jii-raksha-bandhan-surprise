@@ -127,7 +127,7 @@ export default function PlayfulQuestion({ onComplete }: PlayfulQuestionProps) {
                     <div className="absolute top-3 left-4 w-4 h-6 bg-white/35 rounded-full rotate-[-20deg]" />
 
                     {/* Balloon Label */}
-                    <span className="text-[11px] md:text-xs font-bold text-white text-center leading-tight drop-shadow-md px-1">
+                    <span className={`text-[11px] md:text-xs font-bold ${balloon.textColor} text-center leading-tight drop-shadow-md px-1`}>
                       {balloon.label}
                     </span>
 
@@ -163,8 +163,8 @@ export default function PlayfulQuestion({ onComplete }: PlayfulQuestionProps) {
               }}
             >
               <div className="absolute top-4 left-6 w-6 h-10 bg-white/50 rounded-full rotate-[-20deg]" />
-              <Sparkles className="w-8 h-8 text-white mb-2 animate-spin" />
-              <span className="text-sm font-extrabold text-white text-center tracking-wide leading-tight drop-shadow-lg">
+              <Sparkles className="w-8 h-8 text-zinc-900 mb-2 animate-spin" />
+              <span className="text-sm font-extrabold text-zinc-900 text-center tracking-wide leading-tight">
                 GRAND BIRTHDAY BALLOON 👑
               </span>
               <span className="text-[10px] text-amber-950 font-bold bg-white/80 px-2 py-0.5 rounded-full mt-2">

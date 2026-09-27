@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { surpriseData, BirthdayVaultGift } from "@/data/surpriseData";
-import { AudioSynth } from "./MusicControl";
-import { X, Gift, Sparkles, Heart, Film } from "lucide-react";
+import { AudioSynth, Soundtrack } from "./MusicControl";
+import { X, Gift, Sparkles, Film, Pause, Play } from "lucide-react";
 
 interface GiftCollectionProps {
   onComplete: () => void;
@@ -13,8 +13,18 @@ interface GiftCollectionProps {
 export default function GiftCollection({ onComplete }: GiftCollectionProps) {
   const [openedGifts, setOpenedGifts] = useState<number[]>([]);
   const [activeGift, setActiveGift] = useState<BirthdayVaultGift | null>(null);
+  const [playingSrc, setPlayingSrc] = useState<string | null>(null);
   
   const gifts = surpriseData.vaultGifts;
+
+  useEffect(() => {
+    const unsub = Soundtrack.subscribe(() => {
+      setPlayingSrc(Soundtrack.currentSrc());
+    });
+    return () => {
+      unsub();
+    };
+  }, []);
 
   const handleOpenGift = (gift: BirthdayVaultGift) => {
     if (!openedGifts.includes(gift.id)) {
@@ -34,7 +44,17 @@ export default function GiftCollection({ onComplete }: GiftCollectionProps) {
 
   const handleCloseDetail = () => {
     AudioSynth.playClick();
+    Soundtrack.stopSong(true);
     setActiveGift(null);
+  };
+
+  const handlePlaySong = (src: string) => {
+    AudioSynth.playClick();
+    if (Soundtrack.isPlayingSrc(src)) {
+      Soundtrack.stopSong(true);
+      return;
+    }
+    Soundtrack.playSong(src, true);
   };
 
   const isAllOpened = openedGifts.length === gifts.length;
@@ -104,7 +124,10 @@ export default function GiftCollection({ onComplete }: GiftCollectionProps) {
         <AnimatePresence>
           {isAllOpened && (
             <motion.button
-              onClick={onComplete}
+              onClick={() => {
+                Soundtrack.playSong("/music/nee_nange_alva.mp3", true);
+                onComplete();
+              }}
               initial={{ opacity: 0, scale: 0.9, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0 }}
@@ -186,25 +209,34 @@ export default function GiftCollection({ onComplete }: GiftCollectionProps) {
                 {/* Sibling Jukebox Gift Render */}
                 {activeGift.giftType === "jukebox" && activeGift.songs && (
                   <div className="w-full flex flex-col gap-2 my-2">
-                    {activeGift.songs.map((song, sIdx) => (
-                      <div 
-                        key={sIdx} 
-                        className="bg-white/10 p-3 rounded-2xl border border-white/15 flex items-center justify-between text-left hover:bg-white/15 transition-all shadow-sm"
+                    {activeGift.songs.map((song, sIdx) => {
+                      const isPlaying = playingSrc === song.src;
+                      return (
+                      <button 
+                        key={sIdx}
+                        type="button"
+                        onClick={() => handlePlaySong(song.src)}
+                        className={`w-full p-3 rounded-2xl border flex items-center justify-between text-left transition-all shadow-sm cursor-pointer ${
+                          isPlaying
+                            ? "bg-amber-400/20 border-amber-300/50"
+                            : "bg-white/10 border-white/15 hover:bg-white/15"
+                        }`}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-xl bg-pink-500/20 text-pink-300 flex items-center justify-center shrink-0">
-                            <Sparkles className="w-4 h-4 text-amber-300" />
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-9 h-9 rounded-xl bg-pink-500/25 text-amber-200 flex items-center justify-center shrink-0 border border-amber-300/30">
+                            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
                           </div>
-                          <div>
+                          <div className="min-w-0">
                             <span className="text-sm font-bold text-white block leading-tight">{song.title}</span>
-                            <span className="text-[11px] text-purple-200/80">{song.subtitle}</span>
+                            <span className="text-[11px] text-purple-200/80 truncate block">{song.subtitle}</span>
                           </div>
                         </div>
-                        <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-200 font-semibold uppercase tracking-wider shrink-0 border border-amber-300/30">
-                          {song.tag}
+                        <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-200 font-semibold uppercase tracking-wider shrink-0 border border-amber-300/30 ml-2">
+                          {isPlaying ? "Playing" : song.tag}
                         </span>
-                      </div>
-                    ))}
+                      </button>
+                      );
+                    })}
                   </div>
                 )}
 

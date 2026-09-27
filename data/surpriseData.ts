@@ -28,7 +28,7 @@ export interface BirthdayVaultGift {
   giftType: "warranty" | "photo" | "jukebox" | "video";
   image?: string;
   video?: string;
-  songs?: { title: string; subtitle: string; tag: string }[];
+  songs?: { title: string; subtitle: string; tag: string; src: string }[];
 }
 
 export const surpriseData = {
@@ -69,7 +69,7 @@ export const surpriseData = {
       {
         id: 2,
         color: "from-amber-400 via-yellow-500 to-orange-500",
-        textColor: "text-amber-100",
+        textColor: "text-zinc-900",
         label: "💊 Her Daily Prescriptions",
         reward: "Doctor Jii's life-saving advice!",
         compliment: "'Stop overthinking... don't worry, whatever is written will happen, and please take care of yourself!' 😇"
@@ -196,9 +196,9 @@ export const surpriseData = {
       message: "Dedicated to your favorite melodies: 'Meri Jaan' (Gangubai Kathiawadi), 'Darshana' (Hridayam), and from my heart to yours: 'Nee Nange Alva' by Sanjith Hegde. Because aren't you mine, Jii? 🤍🎶",
       giftType: "jukebox",
       songs: [
-        { title: "Meri Jaan", subtitle: "Gangubai Kathiawadi • Her Favorite Vibe", tag: "Jii's Track" },
-        { title: "Darshana", subtitle: "Hridayam • Pure Emotion", tag: "Jii's Track" },
-        { title: "Nee Nange Alva", subtitle: "Sanjith Hegde • 'Aren't you meant for me, Akka?'", tag: "Brother's Dedication" }
+        { title: "Meri Jaan", subtitle: "Gangubai Kathiawadi • Her Favorite Vibe", tag: "Jii's Track", src: "/music/meri_jaan.mp3" },
+        { title: "Darshana", subtitle: "Hridayam • Pure Emotion", tag: "Jii's Track", src: "/music/darshana.mp3" },
+        { title: "Nee Nange Alva", subtitle: "Sanjith Hegde • 'Aren't you meant for me, Akka?'", tag: "Brother's Dedication", src: "/music/nee_nange_alva.mp3" }
       ]
     },
     {
