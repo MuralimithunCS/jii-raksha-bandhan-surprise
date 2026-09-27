@@ -17,7 +17,7 @@ interface Particle {
   decay?: number;
   rotation?: number;
   rotationSpeed?: number;
-  type: "sparkle" | "heart" | "petal";
+  type: "sparkle" | "heart" | "confetti" | "balloon";
   pulseSpeed?: number;
   pulseTime?: number;
 }
@@ -44,47 +44,41 @@ export default function ParticleBackground({ phase }: ParticleBackgroundProps) {
     handleResize();
 
     const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current.x = e.clientX;
-      mouseRef.current.y = e.clientY;
+      mouseRef.current = { x: e.clientX, y: e.clientY };
     };
+    window.addEventListener("mousemove", handleMouseMove);
 
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 0) {
-        mouseRef.current.x = e.touches[0].clientX;
-        mouseRef.current.y = e.touches[0].clientY;
+        mouseRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
       }
     };
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
 
-    const handleTouchEnd = () => {
-      mouseRef.current.x = -1000;
-      mouseRef.current.y = -1000;
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("touchmove", handleTouchMove);
-    window.addEventListener("touchend", handleTouchEnd);
-
-    // Color definitions
+    // Vibrant birthday gala colors
     const colors = {
-      gold: ["#F9F6F0", "#EAD8C0", "#D8B48F", "#F5E8C7"],
-      heart: ["#E76161", "#F99B7D", "#E38B29", "#FF8E9E", "#E8A0BF"],
-      petal: ["#FBD6D6", "#FFC6C6", "#FFABE1", "#FF85B3", "#FFE5EC"],
-      softWhite: ["#FFFFFF", "#F9F6F0", "#ECEBE4", "#EAE2B7"]
+      neon: ["#FF5C8D", "#FFD166", "#06D6A0", "#4CC9F0", "#C77DFF", "#FF85A1"],
+      gold: ["#FFF8E7", "#FFD166", "#F4D06F", "#FAF0CA"],
+      hearts: ["#FF5C8D", "#FF3366", "#FF758F", "#FF85A1"],
+      stars: ["#FFFFFF", "#FFF9E6", "#FFE6A7", "#D8B4E2"]
     };
 
     // Helper to generate a new particle
-    const createParticle = (x?: number, y?: number, typeOverride?: "sparkle" | "heart" | "petal"): Particle => {
+    const createParticle = (x?: number, y?: number, typeOverride?: "sparkle" | "heart" | "confetti" | "balloon"): Particle => {
       const px = x ?? Math.random() * canvas.width;
       const py = y ?? Math.random() * canvas.height;
       
-      let type: "sparkle" | "heart" | "petal" = "sparkle";
+      let type: "sparkle" | "heart" | "confetti" | "balloon" = "sparkle";
       if (typeOverride) {
         type = typeOverride;
-      } else if (phase === "final") {
+      } else if (phase === "final" || phase === "reveal") {
         const rng = Math.random();
-        type = rng < 0.4 ? "petal" : rng < 0.7 ? "heart" : "sparkle";
-      } else if (phase === "reveal" || phase === "secret-gifts" || phase === "rakhi-tying") {
-        type = Math.random() < 0.3 ? "heart" : "sparkle";
+        type = rng < 0.4 ? "confetti" : rng < 0.7 ? "heart" : "sparkle";
+      } else if (phase === "playful" || phase === "scrapbook") {
+        const rng = Math.random();
+        type = rng < 0.35 ? "balloon" : rng < 0.65 ? "confetti" : "sparkle";
+      } else {
+        type = Math.random() < 0.25 ? "heart" : "sparkle";
       }
 
       let color = "";
@@ -93,22 +87,26 @@ export default function ParticleBackground({ phase }: ParticleBackgroundProps) {
       let vy = 0;
 
       if (type === "sparkle") {
-        const pool = phase === "curious" ? colors.softWhite : colors.gold;
-        color = pool[Math.floor(Math.random() * pool.length)];
-        size = Math.random() * 2.5 + 0.5;
-        vx = (Math.random() - 0.5) * 0.4;
-        vy = -(Math.random() * 0.6 + 0.2); // upward
+        color = colors.stars[Math.floor(Math.random() * colors.stars.length)];
+        size = Math.random() * 2.5 + 0.8;
+        vx = (Math.random() - 0.5) * 0.3;
+        vy = -(Math.random() * 0.4 + 0.1);
       } else if (type === "heart") {
-        color = colors.heart[Math.floor(Math.random() * colors.heart.length)];
-        size = Math.random() * 6 + 4;
-        vx = (Math.random() - 0.5) * 0.8;
-        vy = -(Math.random() * 0.8 + 0.4);
+        color = colors.hearts[Math.floor(Math.random() * colors.hearts.length)];
+        size = Math.random() * 5 + 3.5;
+        vx = (Math.random() - 0.5) * 0.6;
+        vy = -(Math.random() * 0.7 + 0.3);
+      } else if (type === "balloon") {
+        color = colors.neon[Math.floor(Math.random() * colors.neon.length)];
+        size = Math.random() * 7 + 6; // balloon radius
+        vx = (Math.random() - 0.5) * 0.5;
+        vy = -(Math.random() * 0.9 + 0.5); // float up
       } else {
-        // Petal
-        color = colors.petal[Math.floor(Math.random() * colors.petal.length)];
-        size = Math.random() * 8 + 6;
-        vx = (Math.random() - 0.3) * 0.8; // drift slightly right
-        vy = Math.random() * 0.6 + 0.6; // fall down
+        // Confetti
+        color = colors.neon[Math.floor(Math.random() * colors.neon.length)];
+        size = Math.random() * 5 + 3;
+        vx = (Math.random() - 0.5) * 0.8;
+        vy = Math.random() * 0.8 + 0.5; // drift down
       }
 
       return {
@@ -118,23 +116,23 @@ export default function ParticleBackground({ phase }: ParticleBackgroundProps) {
         vy,
         size,
         color,
-        alpha: Math.random() * 0.6 + 0.2,
-        decay: Math.random() * 0.005 + 0.002,
+        alpha: Math.random() * 0.7 + 0.3,
+        decay: Math.random() * 0.003 + 0.001,
         rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.02,
+        rotationSpeed: (Math.random() - 0.5) * 0.04,
         type,
         pulseSpeed: Math.random() * 0.05 + 0.02,
         pulseTime: Math.random() * 100
       };
     };
 
-    // Initialize initial particles
-    const initialCount = phase === "final" ? 60 : phase === "curious" ? 30 : 40;
+    // Initial particles
+    const initialCount = 45;
     for (let i = 0; i < initialCount; i++) {
       particles.push(createParticle());
     }
 
-    // Drawing helper for hearts
+    // Heart shape helper
     const drawHeart = (c: CanvasRenderingContext2D, x: number, y: number, size: number) => {
       c.beginPath();
       c.moveTo(x, y + size / 4);
@@ -147,71 +145,62 @@ export default function ParticleBackground({ phase }: ParticleBackgroundProps) {
       c.fill();
     };
 
-    // Drawing helper for petals
-    const drawPetal = (c: CanvasRenderingContext2D, x: number, y: number, size: number, angle: number) => {
+    // Balloon helper
+    const drawBalloon = (c: CanvasRenderingContext2D, x: number, y: number, r: number) => {
       c.save();
-      c.translate(x, y);
-      c.rotate(angle);
       c.beginPath();
-      c.moveTo(0, 0);
-      c.quadraticCurveTo(-size / 2, -size / 2, 0, -size);
-      c.quadraticCurveTo(size / 2, -size / 2, 0, 0);
+      c.ellipse(x, y, r * 0.8, r, 0, 0, Math.PI * 2);
+      c.fill();
+      // knot
+      c.beginPath();
+      c.moveTo(x - 2, y + r);
+      c.lineTo(x + 2, y + r);
+      c.lineTo(x, y + r + 3);
       c.closePath();
       c.fill();
+      // tiny string
+      c.strokeStyle = "rgba(255,255,255,0.4)";
+      c.lineWidth = 0.8;
+      c.beginPath();
+      c.moveTo(x, y + r + 3);
+      c.quadraticCurveTo(x + 3, y + r + 10, x - 1, y + r + 16);
+      c.stroke();
       c.restore();
     };
 
-    // Draw / Update loop
+    // Confetti helper
+    const drawConfetti = (c: CanvasRenderingContext2D, x: number, y: number, size: number, angle: number) => {
+      c.save();
+      c.translate(x, y);
+      c.rotate(angle);
+      c.fillRect(-size / 2, -size / 4, size, size / 2);
+      c.restore();
+    };
+
     const tick = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Max particle cap depends on phase
-      const maxCount = phase === "final" ? 100 : phase === "curious" ? 40 : 65;
-
-      // Add a particle periodically
-      if (particles.length < maxCount && Math.random() < 0.1) {
-        // Spawn from bottom for upward, or top for falling petals
-        const spawnY = phase === "final" ? (Math.random() < 0.5 ? 0 : canvas.height) : canvas.height;
+      const maxCount = 65;
+      if (particles.length < maxCount && Math.random() < 0.15) {
+        const spawnY = Math.random() < 0.5 ? canvas.height + 10 : -10;
         particles.push(createParticle(Math.random() * canvas.width, spawnY));
       }
 
       particles.forEach((p, idx) => {
-        // Update physics
         p.x += p.vx;
         p.y += p.vy;
-        if (p.rotation !== undefined && p.rotationSpeed !== undefined) {
-          p.rotation += p.rotationSpeed;
-        }
-        if (p.pulseTime !== undefined && p.pulseSpeed !== undefined) {
-          p.pulseTime += p.pulseSpeed;
-        }
+        p.rotation = (p.rotation || 0) + (p.rotationSpeed || 0.01);
+        p.pulseTime = (p.pulseTime || 0) + (p.pulseSpeed || 0.03);
 
-        // Mouse avoidance/interaction (simple vector distance push)
-        const dx = p.x - mouseRef.current.x;
-        const dy = p.y - mouseRef.current.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 100) {
-          const force = (100 - dist) / 100 * 0.5; // push strength
-          const angle = Math.atan2(dy, dx);
-          p.vx += Math.cos(angle) * force * 0.8;
-          p.vy += Math.sin(angle) * force * 0.8;
-        }
-
-        // Apply friction to mouse-induced speeds
-        p.vx *= 0.98;
-        if (p.type !== "petal") {
-          p.vy = p.vy * 0.98 + (p.vy < 0 ? -0.01 : 0.01); // restore float
-        }
-
-        // Pulse alpha for sparkle
+        // Alpha pulsation for sparkles
         let currentAlpha = p.alpha;
-        if (p.type === "sparkle" && p.pulseTime) {
+        if (p.type === "sparkle") {
           currentAlpha = p.alpha * (0.6 + 0.4 * Math.sin(p.pulseTime));
         }
 
-        // Draw based on type
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, Math.min(1, currentAlpha));
         ctx.fillStyle = p.color;
-        ctx.globalAlpha = Math.max(0, currentAlpha);
 
         if (p.type === "sparkle") {
           ctx.beginPath();
@@ -219,29 +208,19 @@ export default function ParticleBackground({ phase }: ParticleBackgroundProps) {
           ctx.fill();
         } else if (p.type === "heart") {
           drawHeart(ctx, p.x, p.y, p.size);
-        } else if (p.type === "petal") {
-          drawPetal(ctx, p.x, p.y, p.size, p.rotation || 0);
-        }
-
-        // Wrap around screen edges or handle boundary reset
-        let offScreen = false;
-        if (p.type === "petal") {
-          // Petals fall down
-          if (p.y > canvas.height + 20 || p.x < -20 || p.x > canvas.width + 20) offScreen = true;
+        } else if (p.type === "balloon") {
+          drawBalloon(ctx, p.x, p.y, p.size);
         } else {
-          // Sparkles/Hearts float up
-          if (p.y < -20 || p.x < -20 || p.x > canvas.width + 20) offScreen = true;
+          drawConfetti(ctx, p.x, p.y, p.size, p.rotation || 0);
         }
+        ctx.restore();
 
-        if (offScreen) {
-          particles[idx] = createParticle(
-            Math.random() * canvas.width,
-            p.type === "petal" ? -10 : canvas.height + 10
-          );
+        // Screen wrap
+        if (p.y < -30 || p.y > canvas.height + 30 || p.x < -30 || p.x > canvas.width + 30) {
+          particles[idx] = createParticle(Math.random() * canvas.width, p.vy < 0 ? canvas.height + 10 : -10);
         }
       });
 
-      ctx.globalAlpha = 1.0;
       animationFrameId = requestAnimationFrame(tick);
     };
 
@@ -251,7 +230,6 @@ export default function ParticleBackground({ phase }: ParticleBackgroundProps) {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("touchmove", handleTouchMove);
-      window.removeEventListener("touchend", handleTouchEnd);
       cancelAnimationFrame(animationFrameId);
     };
   }, [phase]);

@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { surpriseData } from "@/data/surpriseData";
 import { AudioSynth } from "./MusicControl";
-import { TeddyCharacter } from "./TeddyIllustration";
+import { Sparkles, Heart } from "lucide-react";
 
 interface LetterRevealProps {
   onComplete: () => void;
@@ -14,11 +14,10 @@ export default function LetterReveal({ onComplete }: LetterRevealProps) {
   const data = surpriseData.letter;
 
   const handleNext = () => {
-    AudioSynth.playChime();
+    AudioSynth.playFirework();
     onComplete();
   };
 
-  // Standard container layout
   const containerVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
@@ -27,7 +26,7 @@ export default function LetterReveal({ onComplete }: LetterRevealProps) {
       transition: {
         duration: 1.2,
         ease: [0.22, 1, 0.36, 1] as const,
-        staggerChildren: 0.25,
+        staggerChildren: 0.18,
         delayChildren: 0.3
       }
     }
@@ -35,61 +34,58 @@ export default function LetterReveal({ onComplete }: LetterRevealProps) {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 15 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.7 } }
   };
 
   return (
-    <div className="page-container bg-[#F6F3EC] paper-texture text-foreground p-4 md:p-6 overflow-y-auto">
-      <div className="absolute inset-0 bg-[#D8B48F]/5 pointer-events-none" />
+    <div className="page-container aurora-bg text-[#FAF8F5] p-4 md:p-6 overflow-y-auto select-none relative">
+      {/* Ambient glow */}
+      <div className="absolute top-1/4 -right-20 w-80 h-80 bg-pink-500/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 -left-20 w-80 h-80 bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="relative z-20 flex flex-col items-center justify-start w-full max-w-lg mx-auto py-8">
+      <div className="relative z-20 flex flex-col items-center justify-start w-full max-w-lg mx-auto py-6">
         
         {/* Screen Intro */}
-        <div className="text-center mb-8 flex flex-col items-center justify-center">
-          <div className="mb-1">
-            <TeddyCharacter pose="envelope" />
-          </div>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
-            className="text-xs uppercase tracking-widest font-semibold text-burgundy"
-          >
-            A Sibling Message
-          </motion.p>
-          <motion.h3
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-2xl md:text-3xl font-serif-display italic text-burgundy mt-1"
-          >
-            Okay Jii... one last thing.
-          </motion.h3>
+        <div className="text-center mb-6 flex flex-col items-center justify-center">
+          <span className="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-amber-300/30 text-xs uppercase tracking-widest text-[#FFD166] font-semibold flex items-center gap-1.5 shadow-sm">
+            <Sparkles className="w-3.5 h-3.5 text-[#FFD166]" />
+            From The Heart
+          </span>
+          <h2 className="text-2xl md:text-3xl font-serif-display font-extrabold text-white mt-1">
+            A Birthday Letter For Jii 🤍🧿
+          </h2>
+          <p className="text-xs text-purple-200/80 font-sans-clean mt-0.5">
+            Some thoughts I saved especially for tonight...
+          </p>
         </div>
 
-        {/* Physical Paper Card */}
+        {/* Golden Scroll Glass Card */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="w-full bg-[#FAF8F5] px-6 py-8 md:px-10 md:py-12 rounded-lg shadow-xl border border-black/5 relative overflow-hidden flex flex-col gap-6 rotate-[0.5deg]"
+          className="w-full birthday-glass-card px-6 py-8 md:px-10 md:py-10 rounded-3xl border border-amber-300/40 shadow-2xl relative overflow-hidden flex flex-col gap-5"
         >
-          {/* Sibling tape decoration at the top */}
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-6 scrapbook-tape z-30 opacity-80" />
+          {/* Golden ribbon tag at top */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 px-6 py-1 bg-gradient-to-r from-amber-400 to-pink-500 rounded-b-xl text-[10px] font-bold uppercase tracking-widest text-black shadow-md">
+            ROYAL SISTERHOOD SCROLL ✨
+          </div>
 
           {/* Letter Head */}
-          <motion.h4 
-            variants={itemVariants}
-            className="text-3xl font-handwritten text-burgundy font-bold border-b border-burgundy/10 pb-2"
-          >
-            {data.title}
-          </motion.h4>
+          <motion.div variants={itemVariants} className="flex items-center justify-between border-b border-white/10 pb-3 mt-2">
+            <h4 className="text-2xl md:text-3xl font-handwritten text-[#FFD166] font-bold">
+              {data.title}
+            </h4>
+            <Heart className="w-6 h-6 text-pink-400 fill-pink-400" />
+          </motion.div>
 
           {/* Letter Body Paragraphs */}
-          <div className="flex flex-col gap-4 text-burgundy/90 text-sm md:text-base leading-relaxed font-light font-sans-clean max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+          <div className="flex flex-col gap-3.5 text-purple-100/90 text-sm md:text-base leading-relaxed font-sans-clean max-h-[340px] overflow-y-auto pr-3 custom-scrollbar">
             {data.paragraphs.map((para, index) => (
               <motion.p 
                 key={index}
                 variants={itemVariants}
+                className={index === 3 ? "text-amber-200 font-medium bg-amber-400/10 p-3 rounded-2xl border border-amber-300/30" : ""}
               >
                 {para}
               </motion.p>
@@ -99,10 +95,10 @@ export default function LetterReveal({ onComplete }: LetterRevealProps) {
           {/* Letter Signature */}
           <motion.div 
             variants={itemVariants}
-            className="mt-4 pt-4 border-t border-burgundy/10 flex flex-col items-end align-bottom"
+            className="pt-3 border-t border-white/10 flex flex-col items-end"
           >
-            <span className="text-xs italic text-burgundy/50 font-sans-clean font-semibold uppercase">Always,</span>
-            <span className="text-xl font-handwritten text-burgundy font-bold mt-1">
+            <span className="text-[11px] uppercase tracking-wider text-purple-300/70 font-sans-clean font-semibold">Forever & Always,</span>
+            <span className="text-2xl font-handwritten text-[#FFD166] font-bold mt-0.5">
               {data.signature}
             </span>
           </motion.div>
@@ -112,16 +108,16 @@ export default function LetterReveal({ onComplete }: LetterRevealProps) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 2.2 }}
-          className="mt-8 z-30"
+          transition={{ delay: 1.5 }}
+          className="mt-6 z-30"
         >
           <motion.button
             onClick={handleNext}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-3.5 bg-burgundy text-[#FAF8F5] rounded-full font-bold tracking-widest text-xs uppercase cursor-pointer shadow-lg hover:bg-burgundy/90 transition-all"
+            className="px-8 py-3.5 bg-gradient-to-r from-amber-400 via-pink-500 to-purple-600 text-white rounded-full font-bold tracking-widest text-xs uppercase cursor-pointer shadow-xl hover:brightness-110 transition-all flex items-center gap-2"
           >
-            Close Letter & Finish ❤️
+            Launch The Midnight Fireworks 🎆✨
           </motion.button>
         </motion.div>
       </div>

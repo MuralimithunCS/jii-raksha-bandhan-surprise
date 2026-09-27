@@ -43,6 +43,68 @@ export class AudioSynth {
     }
   }
 
+  // Crisp balloon pop burst
+  public static playPop() {
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(850, now);
+      osc.frequency.exponentialRampToValueAtTime(70, now + 0.08);
+
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.09);
+    } catch (e) {
+      console.warn("AudioSynth pop error:", e);
+    }
+  }
+
+  // Fireworks whistle and celebratory explosion
+  public static playFirework() {
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+
+      // Whistle up
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(1400, now + 0.22);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.linearRampToValueAtTime(0.001, now + 0.22);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.24);
+
+      // Boom burst
+      const boomOsc = this.ctx.createOscillator();
+      const boomGain = this.ctx.createGain();
+      boomOsc.type = "sine";
+      boomOsc.frequency.setValueAtTime(160, now + 0.22);
+      boomOsc.frequency.exponentialRampToValueAtTime(35, now + 0.6);
+      boomGain.gain.setValueAtTime(0.2, now + 0.22);
+      boomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+      boomOsc.connect(boomGain);
+      boomGain.connect(this.ctx.destination);
+      boomOsc.start(now + 0.22);
+      boomOsc.stop(now + 0.65);
+    } catch (e) {
+      console.warn("AudioSynth firework error:", e);
+    }
+  }
+
   // Sparkling transition chime
   public static playChime() {
     try {

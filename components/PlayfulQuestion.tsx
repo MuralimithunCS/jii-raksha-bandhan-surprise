@@ -1,298 +1,216 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { surpriseData } from "@/data/surpriseData";
+import { surpriseData, BirthdayBalloon } from "@/data/surpriseData";
 import { AudioSynth } from "./MusicControl";
-import { TeddyCharacter } from "./TeddyIllustration";
+import { Trophy, Sparkles, PartyPopper } from "lucide-react";
 
 interface PlayfulQuestionProps {
   onComplete: () => void;
 }
 
 export default function PlayfulQuestion({ onComplete }: PlayfulQuestionProps) {
-  const [noButtonOffset, setNoButtonOffset] = useState({ x: 0, y: 0 });
-  const [playfulIndex, setPlayfulIndex] = useState(0);
-  const [clickCount, setClickCount] = useState(0);
-  const [showWarning, setShowWarning] = useState(false);
-  
-  // Game states
-  const [showGame, setShowGame] = useState(false);
-  const [board, setBoard] = useState<(string | null)[]>(Array(9).fill(null));
-  const [isUserTurn, setIsUserTurn] = useState(true);
-  const [gameStatus, setGameStatus] = useState<"playing" | "won" | "lost" | "draw">("playing");
-  const [banter, setBanter] = useState("Your move, Didi! Try to beat me. 😉");
+  const gameData = surpriseData.balloonPopGame;
+  const [poppedIds, setPoppedIds] = useState<number[]>([]);
+  const [activeReward, setActiveReward] = useState<BirthdayBalloon | null>(null);
+  const [grandUnlocked, setGrandUnlocked] = useState(false);
+  const [banter, setBanter] = useState("Tap any floating balloon to pop it, Jii 🤍🧿! 🎈");
 
-  const data = surpriseData.playfulQuestion;
+  const banters = [
+    "Boom! Look at those popping reflexes! 💅",
+    "Pop pop! Sibling power activated! ✨",
+    "Warning: Brother cannot handle this much grace! 😂",
+    "Award claimed! Didi is unstoppable! 🏆",
+    "Almost there! The grand finale balloon awaits! 🌟"
+  ];
 
-  const handleNoInteraction = () => {
-    AudioSynth.playClick();
-    const range = 120;
-    const rx = (Math.random() - 0.5) * range * 2;
-    const ry = (Math.random() - 0.5) * range * 1.5;
-    setNoButtonOffset({ x: rx, y: ry });
-    setClickCount((prev) => prev + 1);
-    setPlayfulIndex((prev) => (prev + 1) % data.playfulAlerts.length);
-    setShowWarning(true);
+  const handlePop = (balloon: BirthdayBalloon) => {
+    if (poppedIds.includes(balloon.id)) return;
+
+    AudioSynth.playPop();
+    const updated = [...poppedIds, balloon.id];
+    setPoppedIds(updated);
+    setActiveReward(balloon);
+    setBanter(banters[Math.min(updated.length - 1, banters.length - 1)]);
+
+    if (updated.length === gameData.balloons.length) {
+      setTimeout(() => {
+        setGrandUnlocked(true);
+        AudioSynth.playChime();
+        setBanter("🎉 ALL BALLOONS POPPED! Tap the Grand Balloon to proceed!");
+      }, 1000);
+    }
   };
 
-  const handleYes = () => {
+  const handleGrandPop = () => {
+    AudioSynth.playFirework();
     AudioSynth.playSuccess();
-    setShowGame(true);
-  };
-
-  // Tic-Tac-Toe Logic
-  const checkWinCondition = (tempBoard: (string | null)[]) => {
-    const lines = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-      [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-      [0, 4, 8], [2, 4, 6]            // diagonals
-    ];
-    for (const [a, b, c] of lines) {
-      if (tempBoard[a] && tempBoard[a] === tempBoard[b] && tempBoard[a] === tempBoard[c]) {
-        return tempBoard[a];
-      }
-    }
-    if (tempBoard.every((cell) => cell !== null)) {
-      return "draw";
-    }
-    return null;
-  };
-
-  const handleCellClick = (index: number) => {
-    if (board[index] || !isUserTurn || gameStatus !== "playing") return;
-
-    AudioSynth.playClick();
-    const newBoard = [...board];
-    newBoard[index] = "❤️"; // Jii is hearts
-    setBoard(newBoard);
-
-    const winner = checkWinCondition(newBoard);
-    if (winner) {
-      handleGameEnd(winner);
-      return;
-    }
-
-    setIsUserTurn(false);
-    setBanter("Thinking of my counter-attack... 🤔");
-  };
-
-  // Brother's turn AI
-  useEffect(() => {
-    if (isUserTurn || gameStatus !== "playing" || !showGame) return;
-
-    const timer = setTimeout(() => {
-      const emptyCells = board.map((val, idx) => (val === null ? idx : null)).filter((val) => val !== null) as number[];
-      if (emptyCells.length === 0) return;
-
-      // Sibling AI: Block Jii if she's about to win, otherwise pick random
-      let chosenMove = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-      
-      // Look for winning or blocking moves
-      const lines = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8],
-        [0, 3, 6], [1, 4, 7], [2, 5, 8],
-        [0, 4, 8], [2, 4, 6]
-      ];
-      
-      // Try to find a block or win
-      for (const player of ["😂", "❤️"]) {
-        for (const [a, b, c] of lines) {
-          const cells = [board[a], board[b], board[c]];
-          const count = cells.filter((c) => c === player).length;
-          const empty = cells.filter((c) => c === null).length;
-          if (count === 2 && empty === 1) {
-            const index = [a, b, c].find((idx) => board[idx] === null) as number;
-            chosenMove = index;
-            break;
-          }
-        }
-      }
-
-      const newBoard = [...board];
-      newBoard[chosenMove] = "😂"; // Brother is funny face
-      setBoard(newBoard);
-      AudioSynth.playClick();
-
-      const winner = checkWinCondition(newBoard);
-      if (winner) {
-        handleGameEnd(winner);
-      } else {
-        setIsUserTurn(true);
-        const banters = [
-          "Nice try, Didi! Blocked! 🛡️",
-          "Calculated... but incorrect 😂",
-          "You can't beat your annoying brother!",
-          "Make your move, Jii 🤍🧿!",
-        ];
-        setBanter(banters[Math.floor(Math.random() * banters.length)]);
-      }
-    }, 700);
-
-    return () => clearTimeout(timer);
-  }, [isUserTurn, board, gameStatus, showGame]);
-
-  const handleGameEnd = (winner: string) => {
-    if (winner === "❤️") {
-      setGameStatus("won");
-      setBanter("Okay... you got lucky Jii 🤍🧿! You win. 🏆❤️");
-      AudioSynth.playSuccess();
-    } else if (winner === "😂") {
-      setGameStatus("lost");
-      setBanter("Victory is mine! Mwahaha! 😂🏆");
-      AudioSynth.playSuccess();
-    } else {
-      setGameStatus("draw");
-      setBanter("It's a draw! Sibling powers balanced. 🤝");
-      AudioSynth.playChime();
-    }
-  };
-
-  const resetGame = () => {
-    AudioSynth.playClick();
-    setBoard(Array(9).fill(null));
-    setIsUserTurn(true);
-    setGameStatus("playing");
-    setBanter("Round two! Show me what you got. 🔥");
+    setBanter("✨ HAPPY BIRTHDAY JII! Entering the celebration! 🎂");
+    setTimeout(() => {
+      onComplete();
+    }, 1200);
   };
 
   return (
-    <div className="page-container bg-[#F6F3EC] paper-texture text-foreground p-4">
-      <div className="absolute inset-0 bg-[#D8B48F]/5 pointer-events-none" />
-
-      <div className="relative z-20 flex flex-col items-center justify-center max-w-md w-full px-6 text-center select-none">
+    <div className="page-container aurora-bg text-[#FAF8F5] select-none flex flex-col justify-between items-center px-4 py-8 text-center relative overflow-hidden">
+      
+      {/* Header & Banter Box */}
+      <div className="relative z-20 max-w-md w-full flex flex-col items-center gap-2 mt-2">
+        <span className="px-3.5 py-1 rounded-full bg-pink-500/20 border border-pink-400/30 text-pink-300 text-xs font-semibold uppercase tracking-widest flex items-center gap-1.5 shadow-sm">
+          <PartyPopper className="w-3.5 h-3.5 text-pink-300" />
+          Mini Game Arcade
+        </span>
+        <h2 className="text-2xl md:text-3xl font-serif-display font-extrabold text-white">
+          {gameData.title}
+        </h2>
         
-        {!showGame ? (
-          <>
-            {/* Stage 1: Yes/No Question */}
-            <motion.h2
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-3xl md:text-4xl font-serif-display font-bold text-burgundy mb-6 leading-tight"
-            >
-              {data.question}
-            </motion.h2>
+        {/* Dynamic Banter Bubble */}
+        <motion.div
+          key={banter}
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/15 text-xs md:text-sm text-amber-200 font-medium shadow-md mt-1"
+        >
+          {banter}
+        </motion.div>
 
-            {/* Dynamic funny speech bubble */}
-            <div className="h-16 mb-8 flex items-center justify-center">
-              <AnimatePresence mode="wait">
-                {showWarning && (
-                  <motion.div
-                    key={playfulIndex}
-                    initial={{ opacity: 0, scale: 0.8, y: 5 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.8, y: -5 }}
-                    className="bg-white px-5 py-2.5 rounded-2xl shadow-md border border-blush/30 text-burgundy font-medium text-sm relative"
-                  >
-                    {data.playfulAlerts[playfulIndex]}
-                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-r border-b border-blush/30 rotate-45" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Buttons Grid */}
-            <div className="flex flex-col items-center justify-center w-full px-12 relative min-h-[140px]">
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
-                {/* YES Button */}
-                <motion.button
-                  onClick={handleYes}
-                  whileHover={{ scale: 1.08 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-full sm:w-auto min-w-[130px] px-8 py-4 bg-burgundy text-[#FAF8F5] rounded-full font-bold tracking-widest text-sm uppercase cursor-pointer hover:bg-burgundy/90 shadow-lg z-20 transition-colors"
-                >
-                  {data.yesOptions[clickCount % data.yesOptions.length]}
-                </motion.button>
-
-                {/* PLAYFUL NO BUTTON */}
-                <motion.button
-                  onMouseEnter={handleNoInteraction}
-                  onTouchStart={(e) => {
-                    e.preventDefault();
-                    handleNoInteraction();
-                  }}
-                  animate={{
-                    x: noButtonOffset.x,
-                    y: noButtonOffset.y,
-                  }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 250,
-                    damping: 18,
-                  }}
-                  className="w-full sm:w-auto min-w-[130px] px-8 py-4 bg-white text-burgundy/60 border border-burgundy/20 rounded-full font-medium tracking-widest text-sm uppercase shadow-sm cursor-pointer z-10 hover:bg-burgundy/5 select-none"
-                >
-                  {data.noOptions[clickCount % data.noOptions.length]}
-                </motion.button>
-              </div>
-            </div>
-          </>
-        ) : (
-          /* Stage 2: Sibling Tic-Tac-Toe Game */
+        {/* Progress Bar */}
+        <div className="w-48 bg-white/10 rounded-full h-2 mt-2 overflow-hidden border border-white/20">
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="w-full flex flex-col items-center gap-5"
-          >
-            <div className="text-center">
-              <span className="text-xs uppercase tracking-widest font-semibold text-burgundy/60">Mini Game</span>
-              <h3 className="text-2xl font-serif-display text-burgundy font-bold mt-0.5">Beat Brother AI! 🎮</h3>
-            </div>
+            className="bg-gradient-to-r from-pink-500 to-amber-400 h-full rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: `${(poppedIds.length / gameData.balloons.length) * 100}%` }}
+            transition={{ duration: 0.4 }}
+          />
+        </div>
+        <span className="text-[10px] text-purple-300/70 font-mono">
+          {poppedIds.length} / {gameData.balloons.length} Popped
+        </span>
+      </div>
 
-            {/* Banter bubble */}
-            <div className="bg-white px-4 py-2 rounded-2xl shadow-sm border border-blush/30 text-burgundy text-xs font-semibold max-w-[260px] min-h-[40px] flex items-center justify-center relative">
-              {banter}
-              <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-r border-b border-blush/30 rotate-45" />
-            </div>
+      {/* Floating Interactive Balloons Area */}
+      <div className="relative z-20 w-full max-w-md my-4 flex-1 flex flex-wrap items-center justify-center gap-4 md:gap-6 min-h-[300px]">
+        {!grandUnlocked ? (
+          gameData.balloons.map((balloon, index) => {
+            const isPopped = poppedIds.includes(balloon.id);
 
-            {/* 3x3 Grid Board */}
-            <div className="grid grid-cols-3 gap-2 bg-burgundy/10 p-2.5 rounded-2xl w-60 h-60 md:w-64 md:h-64 mt-2">
-              {board.map((cell, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleCellClick(idx)}
-                  className={`bg-white rounded-xl flex items-center justify-center text-3xl font-bold shadow-sm border border-transparent transition-all cursor-pointer select-none ${
-                    !cell && isUserTurn && gameStatus === "playing" ? "hover:border-burgundy/30 hover:bg-burgundy/5" : ""
-                  }`}
-                >
-                  {cell && (
-                    <motion.span
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                    >
-                      {cell}
-                    </motion.span>
-                  )}
-                </button>
-              ))}
-            </div>
-
-            {/* Bottom Actions */}
-            <div className="flex gap-4 mt-2">
-              {gameStatus !== "playing" && (
-                <button
-                  onClick={resetGame}
-                  className="px-5 py-2.5 bg-white border border-burgundy/20 text-burgundy rounded-full text-xs font-semibold uppercase tracking-widest shadow-sm hover:bg-burgundy/5 transition-colors cursor-pointer"
-                >
-                  Replay 🔄
-                </button>
-              )}
-              
-              <button
-                onClick={onComplete}
-                className="px-6 py-2.5 bg-burgundy text-[#FAF8F5] rounded-full text-xs font-semibold uppercase tracking-widest shadow-md hover:bg-burgundy/90 transition-colors cursor-pointer"
+            return (
+              <motion.div
+                key={balloon.id}
+                animate={
+                  !isPopped
+                    ? {
+                        y: [0, -14, 0],
+                        rotate: [-2, 3, -2],
+                      }
+                    : { scale: 0, opacity: 0 }
+                }
+                transition={{
+                  repeat: Infinity,
+                  duration: 2.8 + index * 0.4,
+                  ease: "easeInOut",
+                }}
+                className="relative"
               >
-                {gameStatus !== "playing" ? "Continue ➡️" : "Skip Game ➡️"}
-              </button>
+                {!isPopped ? (
+                  <motion.button
+                    onClick={() => handlePop(balloon)}
+                    whileHover={{ scale: 1.15 }}
+                    whileTap={{ scale: 0.85 }}
+                    className={`w-24 h-32 md:w-28 md:h-36 rounded-[50%] bg-gradient-to-b ${balloon.color} shadow-lg relative flex flex-col items-center justify-center p-2 cursor-pointer transition-transform border border-white/30`}
+                    style={{
+                      borderRadius: "50% 50% 50% 50% / 40% 40% 60% 60%",
+                    }}
+                  >
+                    {/* Balloon shine highlight */}
+                    <div className="absolute top-3 left-4 w-4 h-6 bg-white/35 rounded-full rotate-[-20deg]" />
+
+                    {/* Balloon Label */}
+                    <span className="text-[11px] md:text-xs font-bold text-white text-center leading-tight drop-shadow-md px-1">
+                      {balloon.label}
+                    </span>
+
+                    {/* Balloon knot */}
+                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-2 bg-inherit border-t border-black/10 rounded-b-sm" />
+                    {/* Balloon string */}
+                    <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-0.5 h-5 bg-white/40" />
+                  </motion.button>
+                ) : (
+                  /* Popped placeholder icon */
+                  <div className="w-24 h-32 md:w-28 md:h-36 flex items-center justify-center opacity-30">
+                    <Sparkles className="w-8 h-8 text-amber-300" />
+                  </div>
+                )}
+              </motion.div>
+            );
+          })
+        ) : (
+          /* Grand Celebration Balloon */
+          <motion.div
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: [1, 1.08, 1], opacity: 1 }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            className="flex flex-col items-center gap-3"
+          >
+            <motion.button
+              onClick={handleGrandPop}
+              whileHover={{ scale: 1.15 }}
+              whileTap={{ scale: 0.9 }}
+              className="w-40 h-52 rounded-[50%] bg-gradient-to-b from-amber-300 via-yellow-400 to-rose-500 shadow-[0_0_60px_rgba(255,209,102,0.8)] border-2 border-white flex flex-col items-center justify-center p-4 cursor-pointer relative"
+              style={{
+                borderRadius: "50% 50% 50% 50% / 40% 40% 60% 60%",
+              }}
+            >
+              <div className="absolute top-4 left-6 w-6 h-10 bg-white/50 rounded-full rotate-[-20deg]" />
+              <Sparkles className="w-8 h-8 text-white mb-2 animate-spin" />
+              <span className="text-sm font-extrabold text-white text-center tracking-wide leading-tight drop-shadow-lg">
+                GRAND BIRTHDAY BALLOON 👑
+              </span>
+              <span className="text-[10px] text-amber-950 font-bold bg-white/80 px-2 py-0.5 rounded-full mt-2">
+                TAP TO POP! 💥
+              </span>
+            </motion.button>
+          </motion.div>
+        )}
+      </div>
+
+      {/* Pop-up Sisterhood Award Card */}
+      <AnimatePresence>
+        {activeReward && (
+          <motion.div
+            key={activeReward.id}
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            className="relative z-30 w-full max-w-sm birthday-glass-card rounded-2xl p-4 border border-amber-300/40 shadow-xl flex items-start gap-3 text-left"
+          >
+            <div className="w-10 h-10 rounded-xl bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-[#FFD166] shrink-0 mt-0.5">
+              <Trophy className="w-5 h-5" />
+            </div>
+            <div className="flex-1">
+              <h4 className="text-xs uppercase tracking-wider text-amber-200 font-bold">
+                {activeReward.label}
+              </h4>
+              <p className="text-xs text-white/90 font-medium mt-0.5 leading-snug">
+                {activeReward.reward}
+              </p>
+              <p className="text-[11px] text-pink-300 italic mt-1 font-sans-clean">
+                &ldquo;{activeReward.compliment}&rdquo;
+              </p>
             </div>
           </motion.div>
         )}
+      </AnimatePresence>
 
-        {/* Heart doodles background */}
-        <div className="absolute -bottom-16 opacity-10 pointer-events-none text-9xl text-burgundy font-handwritten">
-          ❤️
-        </div>
+      {/* Skip/Continue button */}
+      <div className="relative z-20 mt-4">
+        <button
+          onClick={onComplete}
+          className="text-xs text-purple-300/60 hover:text-white underline cursor-pointer tracking-wider font-sans-clean transition-colors"
+        >
+          {grandUnlocked ? "Continue to Birthday Cake ➡️" : "Skip Game ➡️"}
+        </button>
       </div>
     </div>
   );

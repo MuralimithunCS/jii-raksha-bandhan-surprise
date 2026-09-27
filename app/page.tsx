@@ -7,14 +7,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import ParticleBackground from "@/components/ParticleBackground";
 import MusicControl from "@/components/MusicControl";
 import OpeningExperience from "@/components/OpeningExperience";
-import GiftReveal from "@/components/GiftReveal";
 import PlayfulQuestion from "@/components/PlayfulQuestion";
+import RakhiTyingScreen from "@/components/RakhiTyingScreen";
 import GreetingReveal from "@/components/GreetingReveal";
 import MemoryWorld from "@/components/MemoryWorld";
 import GiftCollection from "@/components/GiftCollection";
 import LetterReveal from "@/components/LetterReveal";
 import FinalReveal from "@/components/FinalReveal";
-import RakhiTyingScreen from "@/components/RakhiTyingScreen";
 
 type Phase = 
   | "curious" 
@@ -40,10 +39,10 @@ export default function Home() {
     },
     animate: { 
       opacity: 1, 
-      scale: 1,
+      scale: 1, 
       filter: "blur(0px)",
       transition: { 
-        duration: 0.8,
+        duration: 0.7,
         ease: [0.25, 1, 0.5, 1] as const
       }
     },
@@ -52,7 +51,7 @@ export default function Home() {
       scale: 1.02,
       filter: "blur(8px)",
       transition: { 
-        duration: 0.6,
+        duration: 0.5,
         ease: [0.25, 1, 0.5, 1] as const
       }
     }
@@ -65,54 +64,56 @@ export default function Home() {
   const renderActiveScreen = () => {
     switch (phase) {
       case "curious":
+        // Phase 1: VIP Birthday Pass
         return (
           <motion.div key="curious" variants={screenTransitionVariants} initial="initial" animate="animate" exit="exit" className="w-full h-full">
-            <OpeningExperience onComplete={() => setPhase("gift")} startMusic={handleStartMusic} />
-          </motion.div>
-        );
-      case "gift":
-        return (
-          <motion.div key="gift" variants={screenTransitionVariants} initial="initial" animate="animate" exit="exit" className="w-full h-full">
-            <GiftReveal onComplete={() => setPhase("playful")} />
+            <OpeningExperience onComplete={() => setPhase("playful")} startMusic={handleStartMusic} />
           </motion.div>
         );
       case "playful":
+        // Phase 2: Balloon Pop Challenge Arcade
         return (
           <motion.div key="playful" variants={screenTransitionVariants} initial="initial" animate="animate" exit="exit" className="w-full h-full">
             <PlayfulQuestion onComplete={() => setPhase("rakhi-tying")} />
           </motion.div>
         );
       case "rakhi-tying":
+        // Phase 3: Midnight Birthday Cake & Candle Blow Ceremony
         return (
           <motion.div key="rakhi-tying" variants={screenTransitionVariants} initial="initial" animate="animate" exit="exit" className="w-full h-full">
             <RakhiTyingScreen onComplete={() => setPhase("reveal")} />
           </motion.div>
         );
       case "reveal":
+        // Phase 4: Starlight Birthday Greeting Reveal
         return (
           <motion.div key="reveal" variants={screenTransitionVariants} initial="initial" animate="animate" exit="exit" className="w-full h-full">
             <GreetingReveal onComplete={() => setPhase("scrapbook")} />
           </motion.div>
         );
       case "scrapbook":
+        // Phase 5: 3D Floating Glass Birthday Story Carousel
         return (
           <motion.div key="scrapbook" variants={screenTransitionVariants} initial="initial" animate="animate" exit="exit" className="w-full h-full">
             <MemoryWorld onComplete={() => setPhase("secret-gifts")} />
           </motion.div>
         );
       case "secret-gifts":
+        // Phase 6: The Birthday Vault Gifts & Video
         return (
           <motion.div key="secret-gifts" variants={screenTransitionVariants} initial="initial" animate="animate" exit="exit" className="w-full h-full">
             <GiftCollection onComplete={() => setPhase("letter")} />
           </motion.div>
         );
       case "letter":
+        // Phase 7: The Golden Birthday Scroll
         return (
           <motion.div key="letter" variants={screenTransitionVariants} initial="initial" animate="animate" exit="exit" className="w-full h-full">
             <LetterReveal onComplete={() => setPhase("final")} />
           </motion.div>
         );
       case "final":
+        // Phase 8: Interactive Midnight Fireworks Finale
         return (
           <motion.div key="final" variants={screenTransitionVariants} initial="initial" animate="animate" exit="exit" className="w-full h-full">
             <FinalReveal />
@@ -124,7 +125,7 @@ export default function Home() {
   };
 
   return (
-    <main className="relative w-screen h-screen overflow-hidden bg-background">
+    <main className="relative w-screen h-screen overflow-hidden bg-midnight">
       {/* Floating Canvas particles */}
       <ParticleBackground phase={phase} />
 

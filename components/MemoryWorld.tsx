@@ -2,192 +2,158 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { surpriseData, PolaroidMemory } from "@/data/surpriseData";
+import { surpriseData, BirthdayStoryMemory } from "@/data/surpriseData";
 import { AudioSynth } from "./MusicControl";
-import { TeddyCharacter } from "./TeddyIllustration";
-import { X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles, Heart } from "lucide-react";
 
 interface MemoryWorldProps {
   onComplete: () => void;
 }
 
 export default function MemoryWorld({ onComplete }: MemoryWorldProps) {
-  const [activePhoto, setActivePhoto] = useState<PolaroidMemory | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const memories = surpriseData.memories;
+  const currentMem = memories[currentIndex];
 
-  const handlePhotoClick = (photo: PolaroidMemory) => {
-    AudioSynth.playChime();
-    setActivePhoto(photo);
+  const handleNext = () => {
+    AudioSynth.playClick();
+    setCurrentIndex((prev) => (prev + 1) % memories.length);
   };
 
-  const handleClose = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handlePrev = () => {
     AudioSynth.playClick();
-    setActivePhoto(null);
+    setCurrentIndex((prev) => (prev - 1 + memories.length) % memories.length);
+  };
+
+  const handleProceed = () => {
+    AudioSynth.playSuccess();
+    onComplete();
   };
 
   return (
-    <div className="page-container bg-[#F6F3EC] paper-texture text-foreground p-4">
-      {/* Decorative Scrapbook overlay elements */}
-      <div className="absolute inset-0 bg-[#E3B7A8]/5 pointer-events-none" />
-
-      {/* Scrapbook Header */}
-      <div className="relative z-20 text-center mb-6 max-w-md mt-6 flex flex-col items-center justify-center">
-        <div className="mb-1">
-          <TeddyCharacter pose="album" />
-        </div>
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-xs uppercase tracking-widest text-burgundy/60 font-semibold"
-        >
-          Our Sibling Album
-        </motion.span>
-        <motion.h3
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="text-3xl font-serif-display italic text-burgundy font-semibold mt-1"
-        >
-          Scrapbook of Memories
-        </motion.h3>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.6 }}
-          transition={{ delay: 0.4 }}
-          className="text-xs text-burgundy/80 mt-1 font-sans-clean"
-        >
-          (Hold and drag them around! Tap to open 💫)
-        </motion.p>
+    <div className="page-container aurora-bg text-[#FAF8F5] select-none flex flex-col justify-between items-center px-4 py-8 text-center relative overflow-hidden">
+      
+      {/* Header */}
+      <div className="relative z-20 max-w-md w-full flex flex-col items-center gap-1.5 mt-2">
+        <span className="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-amber-300/30 text-xs uppercase tracking-widest text-[#FFD166] font-semibold flex items-center gap-1.5 shadow-sm">
+          <Sparkles className="w-3.5 h-3.5 text-[#FFD166]" />
+          Birthday Starlight Gallery
+        </span>
+        <h2 className="text-2xl md:text-4xl font-serif-display font-extrabold text-white">
+          Our Favorite Moments 📸✨
+        </h2>
+        <p className="text-xs text-purple-200/80 font-sans-clean">
+          Swipe or tap arrows to explore our sweetest sibling chapters
+        </p>
       </div>
 
-      {/* Album Board */}
-      <div className="relative w-full max-w-md h-[400px] md:h-[450px] flex items-center justify-center mb-8">
-        {memories.map((mem, index) => {
-          // Absolute coordinates scattered in the container frame
-          const topPercent = 15 + (index % 2) * 35 + (index * 5) % 15;
-          const leftPercent = 10 + (index * 22) % 60;
+      {/* 3D Glass Carousel Card */}
+      <div className="relative z-20 w-full max-w-md my-4 flex items-center justify-center">
+        {/* Left Arrow Button */}
+        <button
+          onClick={handlePrev}
+          aria-label="Previous Memory"
+          className="absolute -left-2 md:-left-5 z-30 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md flex items-center justify-center text-white cursor-pointer shadow-lg transition-transform active:scale-90"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
 
-          return (
+        {/* Story Card */}
+        <div className="w-full px-4">
+          <AnimatePresence mode="wait">
             <motion.div
-              key={mem.id}
-              drag
-              dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
-              dragElastic={0.2}
-              whileDrag={{ scale: 1.05, zIndex: 40 }}
-              initial={{ 
-                opacity: 0, 
-                scale: 0.8, 
-                rotate: mem.rotation * 3,
-                x: (index - 1.5) * 50,
-                y: (index - 1.5) * 30
-              }}
-              animate={{ 
-                opacity: 1, 
-                scale: 1, 
-                rotate: mem.rotation,
-                x: 0,
-                y: 0
-              }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 100, 
-                damping: 15,
-                delay: index * 0.2 
-              }}
-              onClick={() => handlePhotoClick(mem)}
-              style={{
-                top: `${topPercent}%`,
-                left: `${leftPercent}%`,
-              }}
-              className="absolute w-36 h-44 md:w-44 md:h-52 bg-white p-3 shadow-md rounded-sm border border-black/5 flex flex-col justify-between cursor-pointer select-none z-20 group hover:shadow-xl hover:-translate-y-1 transition-shadow"
+              key={currentMem.id}
+              initial={{ opacity: 0, x: 50, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -50, scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 180, damping: 20 }}
+              className="birthday-glass-card rounded-3xl p-5 border border-amber-300/40 shadow-2xl flex flex-col gap-4 text-left relative overflow-hidden"
             >
-              {/* Paper Washi Tape design */}
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-16 h-5 scrapbook-tape z-30" />
+              {/* Floating Emoji Badge */}
+              <div className="absolute top-4 right-4 z-20 w-10 h-10 rounded-2xl bg-amber-400/20 border border-amber-300/50 backdrop-blur-md flex items-center justify-center text-xl shadow-lg">
+                {currentMem.sticker}
+              </div>
 
               {/* Photo Canvas */}
-              <div className="w-full h-32 md:h-36 bg-zinc-100 overflow-hidden relative rounded-sm">
+              <div className="w-full h-64 md:h-72 rounded-2xl overflow-hidden bg-black/40 relative border border-white/10 shadow-inner group">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={mem.image}
-                  alt={mem.caption}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 pointer-events-none"
+                  src={currentMem.image}
+                  alt={currentMem.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
+                {/* Subtle gradient vignette at bottom of photo */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                
+                {/* Badge Tag */}
+                <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[10px] font-bold uppercase tracking-wider text-amber-200">
+                  {currentMem.date}
+                </span>
               </div>
 
-              {/* Caption Line */}
-              <div className="w-full flex items-center justify-between mt-2 px-1">
-                <span className="text-[10px] text-burgundy/50 font-sans-clean font-semibold uppercase">{mem.date}</span>
-                <span className="text-[9px] text-rose-gold font-handwritten">Jii & Me</span>
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {/* Proceed Button */}
-      <motion.button
-        onClick={onComplete}
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="relative z-30 px-8 py-3.5 bg-burgundy text-[#FAF8F5] rounded-full font-bold tracking-widest text-xs uppercase cursor-pointer shadow-lg hover:bg-burgundy/90 transition-all mb-6"
-      >
-        I have a surprise... 👀
-      </motion.button>
-
-      {/* Polaroid detail popup */}
-      <AnimatePresence>
-        {activePhoto && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={handleClose}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-6 select-none"
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20, rotate: -2 }}
-              animate={{ scale: 1, y: 0, rotate: 0 }}
-              exit={{ scale: 0.9, y: 20, rotate: 2 }}
-              transition={{ type: "spring", stiffness: 220, damping: 20 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white p-5 md:p-6 w-full max-w-sm rounded-lg shadow-2xl border border-black/10 flex flex-col items-center gap-4 relative"
-            >
-              {/* Close Button */}
-              <button
-                onClick={handleClose}
-                className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-colors cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-
-              {/* Taped overlay */}
-              <div className="absolute -top-4 w-24 h-6 scrapbook-tape" />
-
-              {/* Picture frame */}
-              <div className="w-full h-64 bg-zinc-100 overflow-hidden relative rounded-md border border-zinc-200/50 shadow-inner">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={activePhoto.image}
-                  alt={activePhoto.caption}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              {/* Details & Caption */}
-              <div className="w-full flex flex-col gap-2 text-center px-1">
-                <span className="text-xs uppercase tracking-widest text-rose-gold font-bold">{activePhoto.date}</span>
-                <p className="font-handwritten text-2xl md:text-3xl text-burgundy mt-1 leading-normal">
-                  {activePhoto.caption}
+              {/* Memory Details */}
+              <div className="flex flex-col gap-1 px-1">
+                <h3 className="text-lg md:text-xl font-bold font-serif-display text-white tracking-wide">
+                  {currentMem.title}
+                </h3>
+                <p className="text-xs md:text-sm text-purple-100/85 font-sans-clean leading-relaxed">
+                  {currentMem.caption}
                 </p>
               </div>
+
+              {/* Sibling signature line */}
+              <div className="border-t border-white/10 pt-3 flex items-center justify-between text-[11px] text-pink-300">
+                <span className="flex items-center gap-1 font-medium">
+                  <Heart className="w-3.5 h-3.5 fill-pink-400 text-pink-400" />
+                  Jii & Brother Forever
+                </span>
+                <span className="font-mono text-purple-300/60">
+                  {currentIndex + 1} of {memories.length}
+                </span>
+              </div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </AnimatePresence>
+        </div>
+
+        {/* Right Arrow Button */}
+        <button
+          onClick={handleNext}
+          aria-label="Next Memory"
+          className="absolute -right-2 md:-right-5 z-30 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md flex items-center justify-center text-white cursor-pointer shadow-lg transition-transform active:scale-90"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Pagination Indicator Dots */}
+      <div className="relative z-20 flex items-center justify-center gap-2 mb-2">
+        {memories.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => {
+              AudioSynth.playClick();
+              setCurrentIndex(idx);
+            }}
+            className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+              idx === currentIndex
+                ? "w-8 bg-gradient-to-r from-amber-400 to-pink-500 shadow-[0_0_10px_rgba(255,209,102,0.8)]"
+                : "w-2 bg-white/20 hover:bg-white/40"
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* Proceed CTA */}
+      <div className="relative z-20 mt-2">
+        <motion.button
+          onClick={handleProceed}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="px-8 py-3.5 rounded-full bg-gradient-to-r from-amber-400 via-pink-500 to-purple-600 text-white font-bold text-xs md:text-sm tracking-widest uppercase cursor-pointer shadow-xl hover:brightness-110 transition-all flex items-center gap-2"
+        >
+          Unlock The Birthday Vault 🎁✨
+        </motion.button>
+      </div>
     </div>
   );
 }
